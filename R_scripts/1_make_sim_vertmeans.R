@@ -148,17 +148,17 @@ for(v in 1:length(vars)){
   
 }
 
-# sim_long_3layers <- bind_rows(results_3layers, .id = "variable")
-# write.table(sim_long_3layers,file.path("output_mod_3layers_11_16m.dat"), sep = "\t", quote = F, row.names = F)
+sim_long_3layers <- bind_rows(results_3layers, .id = "variable")
+write.table(sim_long_3layers,file.path(rds_dir,"output_mod_3layers_11_16m.dat"), sep = "\t", quote = F, row.names = F)
+
+sim_long_2layers <- bind_rows(results_wholelake, .id = "variable")
+write.table(sim_long_2layers,file.path(rds_dir,"output_mod_2layers_20m.dat"), sep = "\t", quote = F, row.names = F)
+
+sim_long_wholelake <- bind_rows(results_wholelake,.id = "variable")
+write.table(sim_long_wholelake,file.path(rds_dir,"output_mod_wholelake.dat"), sep = "\t", quote = F, row.names = F)
+
 # 
-# sim_long_2layers <- bind_rows(results_wholelake, .id = "variable")
-# write.table(sim_long_2layers,file.path("output_mod_2layers_20m.dat"), sep = "\t", quote = F, row.names = F)
 # 
-# sim_long_wholelake <- bind_rows(results_wholelake,.id = "variable")
-# write.table(sim_long_wholelake,file.path("output_mod_wholelake.dat"), sep = "\t", quote = F, row.names = F)
-
-
-
-saveRDS(results_3layers,file.path(rds_dir, "output_mod_3layers.RDS"))
-saveRDS(results_2layers,file.path(rds_dir, "output_mod_2layers.RDS"))
-saveRDS(results_wholelake,file.path(rds_dir, "output_mod_wholelake.RDS"))
+# saveRDS(results_3layers,file.path(rds_dir, "output_mod_3layers.RDS"))
+# saveRDS(results_2layers,file.path(rds_dir, "output_mod_2layers.RDS"))
+# saveRDS(results_wholelake,file.path(rds_dir, "output_mod_wholelake.RDS"))

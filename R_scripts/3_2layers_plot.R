@@ -8,8 +8,7 @@ library(dplyr)
 library(ggplot2)
 library(lubridate)
 library(ncdf4)
-library(gotmtools)
-library(patchwork)
+library(ggpubr)
 library(tidyr)
 })
 
@@ -36,7 +35,7 @@ dir.create(indv_dir)
 setwd(gotm_dir)
 
 obs_rds <- readRDS(file.path(vertmean_obs_dir,"obs_vertmeans_2layers_20m.rds"))
-sim_rds <- readRDS(file.path(rds_dir,"output_mod_2layers.RDS"))
+#sim_rds <- readRDS(file.path(rds_dir,"output_mod_2layers.RDS"))
 obs_phyto <- read.table(file.path(obs_dir, "Phytoplankton_mmol-per-m3_obs.dat"), sep="\t", header = T) %>%
   filter(Type %in% c("GOTM_Subgroup_centric", "GOTM_Subgroup_cyano"   ,"GOTM_Subgroup_pennate", "Phytoplankton_total"  ))
 
@@ -66,8 +65,8 @@ phyto_long_bottom <- expand.grid(variable=c("Stephanodiscus_c", "Nitzschia_c", "
 phyto_long <- rbind(phyto_long_top, phyto_long_bottom)
 
 obs_long <- bind_rows(obs_rds, .id = "variable")
-sim_long <- bind_rows(sim_rds, .id = "variable")
-
+sim_long <- read.table(file.path(rds_dir, "output_mod_2layers_20m.dat"), sep="\t", header = T)
+sim_long$Date <- as.Date(sim_long$Date)
 phyto_sum <- sim_long %>%
   filter(variable %in% c("Stephanodiscus_c", "Nitzschia_c", "Planktothrix_c", "Limnothrix_c")) %>%
   group_by(Date, layer) %>%                    # add any other grouping columns you have
@@ -118,14 +117,13 @@ for(i in 1:length(layers)){
            plot = p_nutrients[[v]] ,width = 12, height = 10, dpi = 150)
   }
   
-  p_layer <- wrap_plots(p_nutrients, ncol = 1)  + 
-    plot_annotation(title = paste("Biogeochemical Variables at ", layers[i] )) & theme(legend.position = "none")
-  p_layer
+  p_layer <- annotate_figure(
+    ggarrange(plotlist = p_nutrients, ncol = 1, common.legend = TRUE, legend = "none"),
+    top = text_grob(paste("Biogeochemical Variables at", layers[i]), face = "bold", size = 14)
+  )
   
   ggsave(filename = paste0(plot_dir, paste0("Biogeochemical_vars_", layers[i], ".png")),
-         plot = p_layer ,width = 12, height = 15, dpi = 150)
-  
-  
+         plot = p_layer, width = 12, height = 15, dpi = 150, bg = "white")
   
   
   sim_plankton <- sim_long %>% filter(variable %in% plankton_vars)  %>% filter(layer == layers[i])
@@ -156,12 +154,13 @@ for(i in 1:length(layers)){
     }
   }
   
-  p_layer <- wrap_plots(p_plankton, ncol = 1)  + 
-    plot_annotation(title = paste("Plankton Variables at ", layers[i] )) & theme(legend.position = "none")
-  p_layer
+  p_layer <- annotate_figure(
+    ggarrange(plotlist = p_plankton, ncol = 1, common.legend = TRUE, legend = "none"),
+    top = text_grob(paste("Plankton Variables at", layers[i]), face = "bold", size = 14)
+  )
   
   ggsave(filename = paste0(plot_dir, paste0("Plankton_vars_", layers[i], ".png")),
-         plot = p_layer ,width = 12, height = 15, dpi = 150)
+         plot = p_layer, width = 12, height = 15, dpi = 150, bg = "white")
   
   
 }
