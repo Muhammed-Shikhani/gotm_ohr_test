@@ -8,15 +8,14 @@ library(ggplot2)
 library(lubridate)
 library(ncdf4)
 library(gotmtools)
-library(patchwork)
 library(tidyr)
 })
 
 library(here)
 
 root_dir <- here()
-#root_dir <- "/home/muhammed/Projects/Mews_Data_Ohra/"
-gotm_dir <- file.path(root_dir, "GOTM/GOTM_obs_hydrology_ERA5_4groups")
+root_dir <- "/home/muhammed/Projects/MEWS/"
+gotm_dir <- file.path(root_dir, "GOTM_Ohra_4groups")
 data_dir <- file.path(gotm_dir, "obs_data/lake_info/")
 r_dir <- file.path(gotm_dir, "R_scripts/")
 diagnostic_dir <- file.path(gotm_dir, "diagnostics/")
@@ -151,7 +150,7 @@ for(v in 1:length(vars)){
 sim_long_3layers <- bind_rows(results_3layers, .id = "variable")
 write.table(sim_long_3layers,file.path(rds_dir,"output_mod_3layers_11_16m.dat"), sep = "\t", quote = F, row.names = F)
 
-sim_long_2layers <- bind_rows(results_wholelake, .id = "variable")
+sim_long_2layers <- bind_rows(results_2layers, .id = "variable")
 write.table(sim_long_2layers,file.path(rds_dir,"output_mod_2layers_20m.dat"), sep = "\t", quote = F, row.names = F)
 
 sim_long_wholelake <- bind_rows(results_wholelake,.id = "variable")
